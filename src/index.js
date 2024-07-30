@@ -20,7 +20,7 @@ module.exports = {
   bootstrap({ strapi }) {
     const io = new Server(strapi.server.httpServer, {
       cors: {
-        origin: "http://localhost:3000",
+        origin: [process.env.FRONTEND_URL || 'http://localhost:3000'],
         methods: ["GET", "POST"],
         credentials : true
       }
@@ -47,7 +47,6 @@ module.exports = {
       });
 
       socket.on('chatMessage', async (msg) => {
-        // Assuming you have a message content-type
         const message = await strapi.entityService.create('api::message.message', {
           data: {
             content: msg.content,
@@ -64,6 +63,6 @@ module.exports = {
       });
     });
 
-    strapi.io = io; // register socket to strapi
+    strapi.io = io;
   },
 };
